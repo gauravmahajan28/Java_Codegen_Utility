@@ -3,6 +3,10 @@ import java.io.File;
 import com.squareup.javapoet.JavaFile;
 import com.squareup.javapoet.MethodSpec;
 import com.squareup.javapoet.TypeSpec;
+import com.sun.codemodel.JCodeModel;
+import com.sun.codemodel.JDefinedClass;
+import com.sun.codemodel.JExpr;
+import com.sun.codemodel.JMethod;
 
 import javax.lang.model.element.Modifier;
 
@@ -10,22 +14,18 @@ public class SimpleCodegen {
 
 	public static void main(String[] args) throws Exception{
 		// TODO Auto-generated method stub
-		MethodSpec main = MethodSpec.methodBuilder("main")
-			 //   .addModifiers(Modifier.PUBLIC, Modifier.STATIC)
-			    .returns(void.class)
-			 //   .addParameter(String[].class, "args")
-			  //  .addStatement("$T.out.println($S)", System.class, "Hello, JavaPoet!")
-			    .build();
+		JCodeModel cm = new JCodeModel();
+		JDefinedClass dc = cm._class("Bar");
+		JMethod m = dc.method(0, int.class, "foo");
+		m.body()._return(JExpr.lit(5));
+		
+		JMethod m2 = dc.method(0, int.class, "fun2");
+		m2.body()._return(JExpr.lit(5));
+		
 
-			TypeSpec helloWorld = TypeSpec.classBuilder("HelloWorld")
-			  //  .addModifiers(Modifier.PUBLIC, Modifier.FINAL)
-			    .addMethod(main)
-			    .build();
-
-			JavaFile javaFile = JavaFile.builder("com.ias", helloWorld)
-			    .build();
-
-			javaFile.writeTo(new File("HelloWorld.java"));
+		File file = new File("./src/");
+		file.mkdirs();
+		cm.build(file);
 
 	}
 
