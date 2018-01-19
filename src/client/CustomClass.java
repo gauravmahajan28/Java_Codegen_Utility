@@ -1,5 +1,12 @@
 package client;
 
-public class CustomClass {
+import java.io.Serializable;
 
+public class CustomClass implements Serializable {
+
+	public int a;
+	public int b;
+	
+	
+	
 }
