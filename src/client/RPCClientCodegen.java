@@ -1,9 +1,13 @@
 package client;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.io.PrintWriter;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
@@ -35,7 +39,11 @@ public class RPCClientCodegen {
 							  " \n import java.io.InputStreamReader; \n"+
 							  "\n import java.net.ServerSocket; \n"+
 							  " \n import java.net.Socket; \n"+
-							  " \n import java.util.ArrayList; \n";
+							  " \n import java.util.ArrayList; \n"+
+							  " \n import java.io.ByteArrayOutputStream; \n"+
+							  " \n import java.io.ObjectOutputStream; \n"+
+			  " \n import java.io.ByteArrayInputStream; \n"+
+			  " \n import java.io.ObjectInputStream; \n";
 			
 			
 			String className = "\n public class " + args[2] + " implements " + args[0] + "\n";
@@ -141,20 +149,50 @@ public class RPCClientCodegen {
 			   for(int i =0; i < parametersCount; i++)
 			   {
 				   methodString  = " \n " + methodString  + " \n " + " objects.add(" + "\"" +  parameters[i].getType() + "\"" + "); ";
-				   methodString  = " \n " + methodString +" \n " +  " objects.add(" +  parameters[i].getName()  + "); ";
+				   
+				   
+				   if(parameters[i].getType().toString().contains("class") && !parameters[i].getType().toString().contains("java.lang"))
+				   {
+					   methodString  = " \n " + methodString +" \n " + " ByteArrayOutputStream bo = new ByteArrayOutputStream();";
+					   methodString  = " \n " + methodString +" \n " + "  ObjectOutputStream so = new ObjectOutputStream(bo);";
+					   methodString  = " \n " + methodString +" \n " + "  so.writeObject(" + parameters[i].getName() +");";
+					   methodString  = " \n " + methodString +" \n " + "   so.flush();";
+					   methodString  = " \n " + methodString +" \n " + "   objects.add(bo.toString());  ";
+					 
+				   }
+				   else
+				   {
+					   methodString  = " \n " + methodString +" \n " +  " objects.add(" +  parameters[i].getName()  + "); ";
+				   }
+				   
+				   
 				   methodString  = " \n " + methodString +" \n " +  " objects.add(" +  "\""+ parameters[i].getName() + "\""  + "); ";
 					
 			   }
+			   
+			   methodString  = " \n " + methodString +" \n " +  " objects.add(" +  "\""+ returnType + "\""  + "); ";
+				
 			    
 			   methodString  = " \n " + methodString + " \n " +" String ipAddress = " + "\"" + args[3] + "\";";
 			   methodString  = " \n " + methodString + " \n " +" String port = " + "\"" + args[4] + "\";";
 				  
 			   methodString  = " \n " + methodString + " \n " +" String wireProtocolString = RPCCodegenUtilityMethodsWireProtocol.getWireProtocolStringFromInterface(objects); \n";
 			   
-			   methodString  = " \n " + methodString + returnType + " answer = " +  RPCCodegenUtilityMethodsWireProtocol.getObjectType(method.getReturnType().toString()) +  "( "  + "sendToServer(wireProtocolString, ipAddress, port)); \n";
+			   if(returnType.contains(".") && !returnType.contains("java.lang"))
+			   {
+				   methodString = "\n" + methodString + "\n" + " byte b[] = sendToServer(wireProtocolString, ipAddress, port).getBytes();";
+				   methodString = "\n" + methodString + "\n" + " ByteArrayInputStream bi = new ByteArrayInputStream(b);";
+				   methodString = "\n" + methodString + "\n" + "  ObjectInputStream si = new ObjectInputStream(bi);";
+				   methodString = "\n" + methodString + "\n" + "   return (" + returnType + ")si.readObject();";
+				   	   		
+			   }
+				  
+			   else
+			   {
+				   methodString  = " \n " + methodString + returnType + " answer = " +  RPCCodegenUtilityMethodsWireProtocol.getObjectType(method.getReturnType().toString()) +  "( "  + "sendToServer(wireProtocolString, ipAddress, port)); \n";
 			   
-			   methodString  = " \n " + methodString + " return answer; \n";
-		  
+				   methodString  = " \n " + methodString + " return answer; \n";
+			   }
 			    
 			    methodString  = " \n " + methodString + " } \n";
 			    methodsGenerated.add(methodString);

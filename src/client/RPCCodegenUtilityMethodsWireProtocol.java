@@ -11,7 +11,7 @@ public class RPCCodegenUtilityMethodsWireProtocol
 		String wireProtocolString = "";
 		for(int i = 0; i < objects.size(); i++)
 		{
-			wireProtocolString = wireProtocolString + objects.get(i)+"#";
+			wireProtocolString = wireProtocolString + objects.get(i).toString()+"#";
 		}
 		wireProtocolString = wireProtocolString.substring(0, wireProtocolString.length() - 1);
 		return wireProtocolString;

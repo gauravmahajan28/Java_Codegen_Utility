@@ -8,7 +8,7 @@ public interface RPCInterface
 	public float subtract(float quantity, float price) throws Exception;
 
 	
-	public String concat(float quantity, float price) throws Exception;
+	public String concat(String a, String  b) throws Exception;
 
 	
 	public CustomClass add2(CustomClass obe) throws Exception;

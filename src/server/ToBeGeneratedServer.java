@@ -1,8 +1,12 @@
 package server;
 
 import java.io.BufferedInputStream;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.io.ObjectInputStream.GetField;
 import java.lang.reflect.Method;
 import java.net.ServerSocket;
@@ -61,10 +65,10 @@ public class ToBeGeneratedServer {
 		int numberOfParameters = Integer.parseInt(st.nextToken());
 		HashMap<String, Object> parameterMap = new HashMap<>();
 		HashMap<String, String> parameterType = new HashMap<>();
-		Class params[] = new Class[100];
-		Object paramsObj[] = new Object[100];
+		Class params[] = new Class[numberOfParameters];
+		Object paramsObj[] = new Object[numberOfParameters];
 		
-		
+		Boolean isCustomClass = false;
 		for(int i = 0; i < numberOfParameters; i++)
 		{
 			String type = st.nextToken();
@@ -72,9 +76,16 @@ public class ToBeGeneratedServer {
 			String name = st.nextToken();
 			parameterMap.put(name, data);
 			parameterType.put(name,  type);
+			if(type.contains("class"))
+				type = type.split(" ")[1];
+			
 			
 			switch(type)
 			{
+			
+			
+			
+			
 			case "int":
 				params[i] = int.class;
 				paramsObj[i] = Integer.parseInt(data);
@@ -95,12 +106,12 @@ public class ToBeGeneratedServer {
 				paramsObj[i] = Double.parseDouble(data);
 				break;
 				
-			case "Integer":
+			case "java.lang.Integer":
 				params[i] = Integer.class;
 				paramsObj[i] = Integer.parseInt(data);
 				break;
 				
-			case "Double":
+			case "java.lang.Double":
 				params[i] = Double.class;
 				paramsObj[i] = Double.parseDouble(data);
 				break;
@@ -110,17 +121,17 @@ public class ToBeGeneratedServer {
 				paramsObj[i] = Float.parseFloat(data);
 				break;
 				
-			case "Character":
+			case "java.lang.Character":
 				params[i] = Character.class;
 				paramsObj[i] = data;
 				break;
 				
-			case "String":
+			case "java.lang.String":
 				params[i] = String.class;
 				paramsObj[i] = data;
 				break;
 				
-			case "Boolean":
+			case "java.lang.Boolean":
 				params[i] = Boolean.class;
 				paramsObj[i] = data;
 				
@@ -128,11 +139,20 @@ public class ToBeGeneratedServer {
 				params[i] = boolean.class;
 				paramsObj[i] = data;
 				
-			
+			 default:
+				 params[i] = Class.forName(type);
+				 byte b[] = data.getBytes(); 
+				 ByteArrayInputStream bi = new ByteArrayInputStream(b);
+				 ObjectInputStream si = new ObjectInputStream(bi);
+				 paramsObj[i] = si.readObject();
+				 isCustomClass = true;
 			}
 			
 			
 		}
+		
+		String returnType = st.nextToken();
+		
 		
 		Class c = Class.forName(packageName+"." + className);
 		
@@ -142,7 +162,17 @@ public class ToBeGeneratedServer {
 		Method method = c.getMethod(methodName, params);
 		
 		Object result = method.invoke(c.newInstance(), paramsObj);
+		
+		
+		if(returnType.contains(".") && !returnType.contains("java.lang"))
+		{
+			 ByteArrayOutputStream bo = new ByteArrayOutputStream(); 
+			   ObjectOutputStream so = new ObjectOutputStream(bo); 
+			   so.writeObject(result); 
+			    so.flush(); 
+			    return bo.toString();
+		}
 		System.out.println(wireProtocolString);
-		return "5";
+		return result.toString();
 	}
 }
