@@ -45,7 +45,7 @@ public class RPCClientCodegen {
 			
 			
 			String serverCode = "\n" + 
-					" \n public Object sendToServer(String wireProtocolString, String ipAddress, String port) \n"+
+					" \n public String sendToServer(String wireProtocolString, String ipAddress, String port) \n"+
 			" \n { "+
 			"\n	 try "+
 			"\n  { "+      
@@ -54,11 +54,10 @@ public class RPCClientCodegen {
 					"\n DataOutputStream dout=new DataOutputStream(s.getOutputStream());"+    
 					"\n dout.writeUTF(wireProtocolString);  "+
 					"\n dout.flush();  "+
-					"\n byte[] byteArray = new byte[1000];"+
-					"\n din.read(byteArray);"+
+					"\n String obj = din.readUTF();"+
 					"\n dout.close();  "+
 					"\n s.close();"+
-					"\n return byteArray;"+
+					"\n return obj;"+
 					"\n }"+
 					"\n catch(Exception e)"+
 					"\n {"+
@@ -72,17 +71,26 @@ public class RPCClientCodegen {
 			ArrayList<String> methodsGenerated = new ArrayList();
 			
 			Class c = Class.forName(args[1]+"." + args[0]);
-			
+			//  Class params[] = {int.class, int.class};
+			  
+			//  Method thisMethod = c.getDeclaredMethod("add", params);
+			 
 			Method[] methods = c.getDeclaredMethods();
 			System.out.println(c);
 			for (Method method : methods) 
 			{
-				
+				System.out.println("methid name :" + method.getName());
 				String methodString = "";
 				if(Modifier.isPublic(method.getModifiers()))
 						methodString = methodString + " public ";
-				
-				methodString  = "  " + methodString + " " + method.getReturnType()  + " ";
+				String returnType = method.getReturnType().toString();
+				if(returnType.contains("class"))
+				{
+					System.out.println("contains class");
+					returnType = returnType.split(" ")[1];
+				}
+				System.out.println(returnType);
+				methodString  = "  " + methodString + " " + returnType + " ";
 				methodString  = "  " + methodString + " " + method.getName() + " ";
 				
 				
@@ -93,18 +101,24 @@ public class RPCClientCodegen {
 			    
 			    methodString  = " " + methodString + " ( ";
 			    int parametersCount = method.getParameterCount();
-			    
+			   
 			    Parameter[] parameters = method.getParameters();
 			    for(Parameter parameter : parameters)
 			    {
-			    	methodString  = " " + methodString + " " +  parameter.getType() ;
+			    	System.out.println(parameter.getName());
+			    	String parameterType = parameter.getType().toString();
+			    	if(parameterType.contains("class"))
+			    	{
+			    		parameterType = parameterType.split(" ")[1];
+			    	}
+			    	methodString  = " " + methodString + " " +  parameterType ;
 			    	methodString  = " " + methodString + " " +  parameter.getName();
 			    	methodString  = " " + methodString + ",";
-			    	System.out.println(parameter.getType());
+			    	System.out.println(parameterType);
 			    	System.out.println(parameter.getName());
 			    }
 			    methodString = methodString.substring(0, methodString.length() - 1);
-			    methodString  = " " + " " + methodString + " ) \n ";
+			    methodString  = " " + " " + methodString + " ) throws Exception \n ";
 			    methodString  = " \n " + " " + methodString + " { \n";
 			    
 			    methodString  = " \n " + methodString + " \n " + " String packageNameOnServer =  " + "\"" + args[5] + "\";";
@@ -128,21 +142,21 @@ public class RPCClientCodegen {
 			   {
 				   methodString  = " \n " + methodString  + " \n " + " objects.add(" + "\"" +  parameters[i].getType() + "\"" + "); ";
 				   methodString  = " \n " + methodString +" \n " +  " objects.add(" +  parameters[i].getName()  + "); ";
-					   
+				   methodString  = " \n " + methodString +" \n " +  " objects.add(" +  "\""+ parameters[i].getName() + "\""  + "); ";
+					
 			   }
 			    
 			   methodString  = " \n " + methodString + " \n " +" String ipAddress = " + "\"" + args[3] + "\";";
 			   methodString  = " \n " + methodString + " \n " +" String port = " + "\"" + args[4] + "\";";
 				  
-			   methodString  = " \n " + methodString + " \n " +" objects.add(numberOfParameters); ";
 			   methodString  = " \n " + methodString + " \n " +" String wireProtocolString = RPCCodegenUtilityMethodsWireProtocol.getWireProtocolStringFromInterface(objects); \n";
 			   
-			   methodString  = " \n " + methodString + method.getReturnType() + " answer = " +   "( " + RPCCodegenUtilityMethodsWireProtocol.getObjectType(method.getReturnType().toString()) + ")" + "sendToServer(wireProtocolString, ipAddress, port); \n";
+			   methodString  = " \n " + methodString + returnType + " answer = " +  RPCCodegenUtilityMethodsWireProtocol.getObjectType(method.getReturnType().toString()) +  "( "  + "sendToServer(wireProtocolString, ipAddress, port)); \n";
 			   
-			   methodString  = " \n " + methodString + " return answer; ";
+			   methodString  = " \n " + methodString + " return answer; \n";
 		  
 			    
-			    methodString  = " \n " + methodString + " } ";
+			    methodString  = " \n " + methodString + " } \n";
 			    methodsGenerated.add(methodString);
 			    
 			} // for
@@ -160,11 +174,11 @@ public class RPCClientCodegen {
 			
 			for(int i = 0; i < methodsGenerated.size(); i++)
 			{
-				writer.println(methodsGenerated.get(i));
+				writer.print(methodsGenerated.get(i));
 			}
 			writer.println(endBrace);
 			writer.close();
-			
+		
 			
 		}
 		catch(Exception e)

@@ -10,7 +10,7 @@ import java.util.ArrayList;
 
 public class ToBeGenerated implements RPCInterface
 {
-
+	
 	public int add(int a, int b) {
 		// TODO Auto-generated method stub
 		String packageName = "";
@@ -64,6 +64,13 @@ public class ToBeGenerated implements RPCInterface
 			System.out.println(e);
 			}  
 		return null;
+	}
+
+
+	@Override
+	public float subtract(float quantity, float price) {
+		// TODO Auto-generated method stub
+		return 0;
 	}
 	
 	
