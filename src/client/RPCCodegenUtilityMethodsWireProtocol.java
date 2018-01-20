@@ -20,7 +20,7 @@ public class RPCCodegenUtilityMethodsWireProtocol
 	
 	public static String getObjectType(String primitiveDataType)
 	{
-		
+		   
 		
 		
 		if(primitiveDataType.contains("class"))
