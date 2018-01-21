@@ -7,8 +7,8 @@ public class RPCDriver {
 			RPCInterfaceImplementation rpcInterfaceImplementation = new RPCInterfaceImplementation();
 			try {
 			//	System.out.println(rpcInterfaceImplementation.add(10, 20));
-			//	System.out.println(rpcInterfaceImplementation.subtract(13.3f, 0.3f));
-				System.out.println(rpcInterfaceImplementation.concat("abc", "pqr"));
+				System.out.println(rpcInterfaceImplementation.subtract(13.3f, 0.3f));
+			//	System.out.println(rpcInterfaceImplementation.concat("abc", "pqr"));
 			/*	CustomClass customClassTest = new CustomClass();
 				customClassTest.a = 10;
 				customClassTest.b = 20;

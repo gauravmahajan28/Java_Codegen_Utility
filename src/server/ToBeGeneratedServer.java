@@ -9,15 +9,21 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.ObjectInputStream.GetField;
 import java.lang.reflect.Method;
+import java.lang.reflect.Parameter;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Map;
 import java.util.Scanner;
 import java.util.StringTokenizer;
 
 public class ToBeGeneratedServer {
 
+	// name of interface file
+	// location of jar is hardcoded
+	
+	
 	public static void main(String[] args) throws Exception  {
 		// TODO Auto-generated method stub
 		
@@ -68,6 +74,28 @@ public class ToBeGeneratedServer {
 		Class params[] = new Class[numberOfParameters];
 		Object paramsObj[] = new Object[numberOfParameters];
 		
+		Class serverInterface = Class.forName("server.ServerInterface");
+		
+		Map<String, Integer> parameterPositon = new HashMap<>();
+		
+		Method[] interfaceMethods = serverInterface.getMethods();
+		
+		for(Method method : interfaceMethods)
+		{
+			System.out.println(method.getName());
+			System.out.println(method.getParameterCount());
+			if(method.getName().equals(methodName) && method.getParameterCount() == numberOfParameters)
+			{
+				int count = 0;
+				for(Parameter parameter : method.getParameters())
+				{
+					parameterPositon.put(parameter.getName(), count++);
+				}
+				break;
+			}
+		}
+		
+		
 		Boolean isCustomClass = false;
 		for(int i = 0; i < numberOfParameters; i++)
 		{
@@ -80,6 +108,8 @@ public class ToBeGeneratedServer {
 				type = type.split(" ")[1];
 			
 			
+			int position = parameterPositon.get(name);
+		
 			switch(type)
 			{
 			
@@ -87,64 +117,64 @@ public class ToBeGeneratedServer {
 			
 			
 			case "int":
-				params[i] = int.class;
-				paramsObj[i] = Integer.parseInt(data);
+				params[position] = int.class;
+				paramsObj[position] = Integer.parseInt(data);
 				break;
 				
 			case "char":
-				params[i] = char.class;
-				paramsObj[i] = data;
+				params[position] = char.class;
+				paramsObj[position] = data;
 				break;
 				
 			case "float":
-				params[i] = float.class;
-				paramsObj[i] = Float.parseFloat(data);
+				params[position] = float.class;
+				paramsObj[position] = Float.parseFloat(data);
 				break;
 				
 			case "double":
-				params[i] = double.class;
-				paramsObj[i] = Double.parseDouble(data);
+				params[position] = double.class;
+				paramsObj[position] = Double.parseDouble(data);
 				break;
 				
 			case "java.lang.Integer":
-				params[i] = Integer.class;
-				paramsObj[i] = Integer.parseInt(data);
+				params[position] = Integer.class;
+				paramsObj[position] = Integer.parseInt(data);
 				break;
 				
 			case "java.lang.Double":
-				params[i] = Double.class;
-				paramsObj[i] = Double.parseDouble(data);
+				params[position] = Double.class;
+				paramsObj[position] = Double.parseDouble(data);
 				break;
 				
 			case "Float":
-				params[i] = Float.class;
-				paramsObj[i] = Float.parseFloat(data);
+				params[position] = Float.class;
+				paramsObj[position] = Float.parseFloat(data);
 				break;
 				
 			case "java.lang.Character":
-				params[i] = Character.class;
-				paramsObj[i] = data;
+				params[position] = Character.class;
+				paramsObj[position] = data;
 				break;
 				
 			case "java.lang.String":
-				params[i] = String.class;
-				paramsObj[i] = data;
+				params[position] = String.class;
+				paramsObj[position] = data;
 				break;
 				
 			case "java.lang.Boolean":
-				params[i] = Boolean.class;
-				paramsObj[i] = data;
+				params[position] = Boolean.class;
+				paramsObj[position] = data;
 				
 			case "boolean":
-				params[i] = boolean.class;
-				paramsObj[i] = data;
+				params[position] = boolean.class;
+				paramsObj[position] = data;
 				
 			 default:
-				 params[i] = Class.forName(type);
+				 params[position] = Class.forName(type);
 				 byte b[] = data.getBytes(); 
 				 ByteArrayInputStream bi = new ByteArrayInputStream(b);
 				 ObjectInputStream si = new ObjectInputStream(bi);
-				 paramsObj[i] = si.readObject();
+				 paramsObj[position] = si.readObject();
 				 isCustomClass = true;
 			}
 			
@@ -152,6 +182,9 @@ public class ToBeGeneratedServer {
 		}
 		
 		String returnType = st.nextToken();
+		
+		
+		TestClassLoading.loadClasses();
 		
 		
 		Class c = Class.forName(packageName+"." + className);
