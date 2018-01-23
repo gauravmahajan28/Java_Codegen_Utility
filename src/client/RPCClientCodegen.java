@@ -223,9 +223,7 @@ public class RPCClientCodegen {
 		{
 			System.out.println("error in generating code :" + e.getMessage());
 		}
-		
-		
-		
+			
 	}
 
 }

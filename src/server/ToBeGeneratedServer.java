@@ -164,10 +164,12 @@ public class ToBeGeneratedServer {
 			case "java.lang.Boolean":
 				params[position] = Boolean.class;
 				paramsObj[position] = data;
+				break;
 				
 			case "boolean":
 				params[position] = boolean.class;
 				paramsObj[position] = data;
+				break;
 				
 			 default:
 				 params[position] = Class.forName(type);
@@ -183,9 +185,7 @@ public class ToBeGeneratedServer {
 		
 		String returnType = st.nextToken();
 		
-		
 		TestClassLoading.loadClasses();
-		
 		
 		Class c = Class.forName(packageName+"." + className);
 		
@@ -195,7 +195,6 @@ public class ToBeGeneratedServer {
 		Method method = c.getMethod(methodName, params);
 		
 		Object result = method.invoke(c.newInstance(), paramsObj);
-		
 		
 		if(returnType.contains(".") && !returnType.contains("java.lang"))
 		{

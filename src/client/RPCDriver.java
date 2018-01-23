@@ -6,7 +6,7 @@ public class RPCDriver {
 		// TODO Auto-generated method stub
 			RPCInterfaceImplementation rpcInterfaceImplementation = new RPCInterfaceImplementation();
 			try {
-			//	System.out.println(rpcInterfaceImplementation.add(10, 20));
+				System.out.println(rpcInterfaceImplementation.add(10, 20));
 				System.out.println(rpcInterfaceImplementation.subtract(13.3f, 0.3f));
 			//	System.out.println(rpcInterfaceImplementation.concat("abc", "pqr"));
 			/*	CustomClass customClassTest = new CustomClass();
@@ -14,8 +14,8 @@ public class RPCDriver {
 				customClassTest.b = 20;
 				
 				CustomClass customClass = rpcInterfaceImplementation.add2(customClassTest);
-				System.out.println(customClass.a + customClass.b);
-				*/
+				System.out.println(customClass.a + customClass.b);*/
+				
 				
 			} catch (Exception e) {
 				// TODO Auto-generated catch block

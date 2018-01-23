@@ -5,7 +5,11 @@ import java.util.ArrayList;
 public class RPCCodegenUtilityMethodsWireProtocol 
 {
 	
-	
+	/**
+	 * generate wire protocall string from array of objects
+	 * @param objects
+	 * @return
+	 */
 	public static String getWireProtocolStringFromInterface(ArrayList<Object> objects)
 	{
 		String wireProtocolString = "";
@@ -18,11 +22,14 @@ public class RPCCodegenUtilityMethodsWireProtocol
 	}
 	
 	
+	/**
+	 * get string type
+	 * @param primitiveDataType
+	 * @return
+	 */
 	public static String getObjectType(String primitiveDataType)
 	{
 		   
-		
-		
 		if(primitiveDataType.contains("class"))
 		{
 			

@@ -39,11 +39,6 @@ import java.util.jar.JarFile;
 			    
 			}
 			
-			 Class c2 = Class.forName(className);
-			 for(Method method2 : c2.getMethods())
-			 {
-				 System.out.println(method2.getName());
-			 }
 			
 		} catch (IOException e) {
 			// TODO Auto-generated catch block

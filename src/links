@@ -5,3 +5,39 @@ https://github.com/esfand/printit/blob/master/codemodel-tutorial.md
 https://stackoverflow.com/questions/47872206/use-jcodemodel-to-generate-tostring-method
 
 https://stackoverflow.com/questions/26975856/how-to-generate-comment-inside-a-method-with-jcodemodel
+
+
+
+
+AdditionService
+
+package server;
+
+import client.CustomClass;
+
+public class AdditionService {
+
+	public int add(int a, int b)
+	{
+		return a+b;
+	}
+	public float subtract(float quantity, float price)
+	{
+		return quantity-price;
+	}
+	
+	public String concat(String a, String b)
+	{
+		return a.concat(b); 
+	}
+	
+	public  CustomClass add2(CustomClass obe)
+	{
+		CustomClass customClass = new CustomClass();
+		customClass.a = obe.a  + 10;
+		customClass.b = obe.b + 20;
+		return customClass;
+	}
+	
+	
+}
