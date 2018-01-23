@@ -8,7 +8,7 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.ArrayList;
 
-public class ToBeGenerated implements RPCInterface
+public class ToBeGenerated 
 {
 	
 	public int add(int a, int b) {
@@ -67,34 +67,6 @@ public class ToBeGenerated implements RPCInterface
 	}
 
 
-	@Override
-	public float subtract(float quantity, float price) {
-		// TODO Auto-generated method stub
-		return 0;
-	}
-
-
-	@Override
-	public String concat(float quantity, float price) throws Exception {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-
-	@Override
-	public CustomClass add2(CustomClass obe) throws Exception {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-
-	@Override
-	public Integer addInteger(Integer a, int b) throws Exception {
-		// TODO Auto-generated method stub
-		return null;
-	}
-	
-	
 	
 	
 }

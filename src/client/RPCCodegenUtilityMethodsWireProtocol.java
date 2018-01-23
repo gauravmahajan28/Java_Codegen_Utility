@@ -37,8 +37,6 @@ public class RPCCodegenUtilityMethodsWireProtocol
 	
 		}
 	
-		
-		
 		switch(primitiveDataType)
 		{
 		
